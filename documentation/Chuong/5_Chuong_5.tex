@@ -1,0 +1,61 @@
+% !TeX root = ../main.tex
+
+\documentclass[../main.tex]{subfiles}
+\begin{document}
+
+Đồ án đã hoàn thành việc nghiên cứu, thiết kế và triển khai hệ thống giám sát tháp giải nhiệt dựa trên công nghệ IoT với những kết quả tích cực về hiệu quả kỹ thuật và kinh tế. Chương này đánh giá mức độ hoàn thành các mục tiêu nghiên cứu, tổng kết những đóng góp khoa học và thực tiễn, đồng thời đề xuất các hướng phát triển tương lai.
+
+\section{Kết luận}
+\label{sec:conclusion}
+
+Hệ thống giám sát IoT đã được triển khai thành công với độ tin cậy thu thập dữ liệu đạt 99,8\% trong thời gian thí nghiệm 10 ngày. Kiến trúc tích hợp cảm biến DS18B20, DHT22, YF-S201 và vi điều khiển ESP32 hoạt động ổn định. Hệ thống backend sử dụng InfluxDB và Grafana đạt thời gian đáp ứng tốt và khả năng nén dữ liệu cao. Giao thức MQTT đảm bảo truyền thông với độ trễ thấp và khả năng chịu lỗi, phục hồi tự động sau sự cố mạng. Hệ thống được thiết kế với kiến trúc có khả năng mở rộng cao, hỗ trợ tích hợp lên đến 50 node cảm biến đồng thời trên cùng một mạng và cho phép giám sát từ xa thông qua kết nối 4G/LTE.
+
+Kiến trúc mở cho phép tích hợp thêm nhiều loại cảm biến khác nhau mà không cần thay đổi cơ bản về hạ tầng. Giao thức MQTT được cấu hình với cơ chế QoS đảm bảo độ tin cậy dữ liệu khi mở rộng quy mô.
+
+\section{Hạn chế và hướng phát triển}
+\label{sec:limitations_future}
+
+\subsection{Những hạn chế của nghiên cứu}
+\label{sec:research_limitations}
+
+Nghiên cứu được thực hiện trong môi trường phòng thí nghiệm với quy mô nhỏ, chưa đánh giá đầy đủ ảnh hưởng của điều kiện khắc nghiệt trong môi trường công nghiệp thực tế. Cảm biến lưu lượng YF-S201 có độ chính xác hạn chế $\pm$10\% và xu hướng drift theo thời gian. Thời gian thí nghiệm 10 ngày chưa đủ để đánh giá độ bền dài hạn của hệ thống. Hệ thống phụ thuộc hoàn toàn vào kết nối mạng và nguồn điện, tạo ra điểm yếu tiềm ẩn trong ứng dụng công nghiệp.
+
+Mô hình tháp giải nhiệt với công suất thiết kế 500W chỉ phù hợp cho các ứng dụng quy mô nhỏ như máy tính để bàn, thiết bị điện tử công suất vừa phải hoặc mục đích thí nghiệm và giảng dạy. Đối với các ứng dụng công nghiệp có tải nhiệt lớn hơn, cần có nghiên cứu bổ sung về khả năng mở rộng quy mô và tối ưu hóa thiết kế.
+
+\subsection{Hướng phát triển công nghệ}
+\label{sec:technology_development}
+
+Hướng phát triển tương lai cần tập trung vào nâng cấp hệ thống cảm biến sử dụng các loại công nghiệp có độ chính xác cao như cảm biến lưu lượng điện từ hoặc siêu âm với độ chính xác $\pm$1\%. Việc tích hợp cảm biến bổ trợ đo rung động, áp suất và chất lượng nước sẽ cung cấp cái nhìn toàn diện về trạng thái vận hành.
+
+Ứng dụng thuật toán học máy và trí tuệ nhân tạo để nâng cao khả năng dự đoán là hướng phát triển quan trọng. Mạng nơ-ron có thể được huấn luyện để dự đoán hiệu suất dựa trên dữ liệu lịch sử và điều kiện môi trường, cho phép điều chỉnh tham số vận hành chủ động. Tích hợp các công nghệ tiên tiến như trí tuệ nhân tạo và học máy vào hệ thống điều khiển có thể nâng cao hiệu suất vận hành và tạo ra giá trị gia tăng đáng kể.
+
+\subsection{Triển vọng ứng dụng và thương mại hóa}
+\label{sec:commercialization_prospects}
+
+Tiềm năng phát triển của mô hình không chỉ dừng lại ở ứng dụng giáo dục mà còn mở ra nhiều cơ hội thương mại hóa. Với sự phát triển của công nghệ IoT và nhu cầu tự động hóa ngày càng tăng, mô hình có thể được nâng cấp thành sản phẩm thương mại cho các ứng dụng cụ thể như làm mát thiết bị viễn thông, trạm phát sóng hoặc các hệ thống điều khiển công nghiệp.
+
+Khả năng mở rộng quy mô của thiết kế cho phép phát triển các phiên bản có công suất lớn hơn bằng cách tăng kích thước hoặc kết hợp nhiều module. Việc chuẩn hóa thiết kế và quy trình sản xuất có thể giảm đáng kể chi phí sản xuất hàng loạt, tạo ra lợi thế cạnh tranh về giá thành so với các sản phẩm nhập khẩu.
+
+Nghiên cứu cần mở rộng ứng dụng cho các thiết bị trao đổi nhiệt khác và tích hợp với hệ thống quản lý thông minh thông qua các giao thức công nghiệp như Modbus, OPC-UA. Nghiên cứu quy mô lớn tại cơ sở công nghiệp thực tế cần được thực hiện để xác thực tính hiệu quả và độ tin cậy của hệ thống.
+
+\section{Đánh giá tổng thể về mô hình}
+\label{sec:model_overall_assessment}
+
+Mô hình tháp giải nhiệt mini đã được thiết kế thành công với các thông số kỹ thuật đáp ứng đầy đủ yêu cầu về mặt kỹ thuật, kinh tế và ứng dụng thực tiễn. Thiết kế tích hợp hài hòa các nguyên lý truyền nhiệt và truyền khối cơ bản với công nghệ IoT hiện đại, tạo ra một công cụ mạnh mẽ cho cả mục đích giáo dục và nghiên cứu ứng dụng.
+
+Các thông số thiết kế được tối ưu hóa dựa trên phân tích kỹ lưỡng các yếu tố ảnh hưởng đến hiệu suất hệ thống, từ hình học tháp đến lựa chọn vật liệu và thiết bị. Việc áp dụng các tiêu chuẩn kỹ thuật quốc tế trong thiết kế đảm bảo tính khoa học và khả năng so sánh với các nghiên cứu tương tự trên thế giới.
+
+Hệ thống giám sát và điều khiển tự động được tích hợp từ giai đoạn thiết kế ban đầu, không chỉ nâng cao độ chính xác của các phép đo mà còn tạo điều kiện cho việc nghiên cứu các thuật toán điều khiển tiên tiến. Khả năng thu thập và xử lý dữ liệu thời gian thực mở ra nhiều cơ hội nghiên cứu về tối ưu hóa hiệu suất và phát triển các mô hình dự đoán thông minh.
+
+\section{Tổng kết}
+\label{sec:final_summary}
+
+Đồ án đã thành công nghiên cứu, thiết kế và triển khai hệ thống giám sát tháp giải nhiệt dựa trên công nghệ IoT, đạt được các mục tiêu kỹ thuật và kinh tế đề ra. Hệ thống thể hiện độ tin cậy cao với tỷ lệ thu thập dữ liệu 99,8\%, khả năng phát hiện xu hướng suy giảm hiệu suất và hiệu quả kinh tế rõ rệt so với một số phương pháp truyền thống.
+
+Từ góc độ kinh tế, hệ thống giám sát IoT đã chứng minh hiệu quả vượt trội với khả năng tiết kiệm hơn 90\% chi phí vận hành so với phương pháp giám sát thủ công truyền thống. Thời gian hoàn vốn ngắn (6-8 tháng) và lợi ích kinh tế dài hạn tạo ra giá trị đầu tư bền vững. Thiết kế mô đun và khả năng mở rộng của hệ thống đảm bảo tính thích ứng với các yêu cầu phát triển trong tương lai, đồng thời mở ra cơ hội ứng dụng rộng rãi từ giáo dục đến công nghiệp.
+
+Các đóng góp nổi bật của nghiên cứu không chỉ dừng lại ở thiết kế kỹ thuật mà còn thể hiện ở tính ứng dụng thực tiễn với kiến trúc tối ưu chi phí lắp đặt cũng như chi phí vận hành. Hệ thống được thiết kế với tầm nhìn dài hạn, cho phép tích hợp linh hoạt với các công nghệ mới nổi trong kỷ nguyên số.
+
+Kết quả nghiên cứu đặt nền tảng quan trọng cho việc phát triển các hệ thống giám sát IoT tiên tiến trong ngành công nghiệp nhiệt, đóng góp vào quá trình chuyển đổi số và phát triển bền vững của ngành công nghiệp Việt Nam. Mô hình này có thể được nhân rộng cho nhiều ứng dụng tương tự, tạo đà cho sự phát triển công nghệ giám sát thông minh phù hợp với điều kiện trong nước.
+
+\end{document}

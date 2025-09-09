@@ -1,0 +1,45 @@
+% !TeX root = ../main.tex
+
+\documentclass[main.tex]{subfiles}
+\usepackage{graphicx}
+\usepackage{float}
+\newcommand{\underwrite}[3][]{% \underwrite[<thickness>]{<numerator>}{<denominator>}
+  \genfrac{}{}{#1}{}{\textstyle #2}{\scriptstyle #3}
+}
+\begin{document}
+\begin{titlepage}
+\thispagestyle{empty}
+% \thisfancypage{
+% \setlength{\fboxsep}{3pt}
+% \fbox}{} 
+\begin{center}
+
+{\textbf{\large{ĐẠI HỌC BÁCH KHOA HÀ NỘI}}}\\[4cm]
+
+{\textbf{\huge{ ĐỒ ÁN TỐT NGHIỆP}}}\\[1cm]
+{\textbf{\Large{Thiết kế xây dựng hệ thống IoT giám sát và tính toán thông số tháp giải nhiệt}}}\\[1cm]
+
+{\textbf{\large{VŨ ĐỨC MINH}}}\\
+{\large{Minh.VD214749@sis.hust.edu.vn}}\\[0.5cm]
+
+{\textbf{\large{Ngành Kỹ thuật Nhiệt}}}\\[0.5cm]
+{\textbf{\large{Chuyên ngành Công nghệ năng lượng và Nhiệt điện}}}\\[0.5cm]
+
+\vspace{2cm}
+\begin{table}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{ll}
+\multicolumn{1}{c}{\textbf{Giảng viên hướng dẫn:}} & TS. Đỗ Mạnh Hùng \hspace{0.5cm} \underline{\hspace{3cm}}  \\[0.5cm]
+  & \multicolumn{1}{r}{Chữ kí GVHD}     \\[0.5cm]
+\textbf{Khoa:} & Năng Lượng Nhiệt                 \\[0.5cm]
+\textbf{Trường:} & Cơ Khí \\[5cm]
+\multicolumn{2}{c}{\textbf{HÀ NỘI, 09/2025}}                                            
+\end{tabular}%
+}
+\end{table}
+\end{center}
+
+\end{titlepage}
+
+\end{document}

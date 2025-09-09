@@ -1,0 +1,464 @@
+% \documentclass[a4paper,13pt,3p,oneside]{report}
+\documentclass[a4paper,13pt,3p,twoside]{report}
+
+
+% \usepackage{minted} % yêu cầu biên dịch với -shell-escape
+
+
+\usepackage{scrextend}
+\changefontsizes{13pt}
+\usepackage[utf8]{vietnam}
+\usepackage[top=2cm, bottom=2cm, left=3.5cm, right=2.5cm]{geometry}
+
+\usepackage{graphicx} % Cho phép chèn hỉnh ảnh
+\usepackage{fancybox} % Tạo khung box
+\usepackage{indentfirst} % Thụt đầu dòng ở dòng đầu tiên trong đoạn
+\usepackage{amsthm} % Cho phép thêm các môi trường định nghĩa
+\usepackage{latexsym} % Các kí hiệu toán học
+\usepackage{amsmath} % Hỗ trợ một số biểu thức toán học
+\usepackage{amssymb} % Bổ sung thêm kí hiệu về toán học
+\usepackage{amsbsy} % Hỗ trợ các kí hiệu in đậm
+\usepackage{times} % Chọn font Time New Romans
+\usepackage{array} % Tạo bảng array
+\usepackage{enumitem} % Cho phép thay đổi kí hiệu của list
+\usepackage{subfiles} % Chèn các file nhỏ, giúp chia các chapter ra nhiều file hơn
+\usepackage{titlesec} % Giúp chỉnh sửa các tiêu đề, đề mục như chương, phần,..
+\usepackage{titletoc}
+\usepackage{chngcntr} % Dùng để thiết lập lại cách đánh số caption,..
+\usepackage{pdflscape} % Đưa các bảng có kích thước đặt theo chiều ngang giấy
+\usepackage{afterpage}
+\usepackage{rotating}
+\usepackage[ruled,vlined]{algorithm2e}  % Hỗ trợ viết các giải thuật
+\usepackage{capt-of} % Cho phép sử dụng caption lớn đối với landscape page
+\usepackage{multirow} % Merge cells
+\usepackage{fancyhdr} % Cho phép tùy biến header và footer
+% \usepackage[backend=biber,style=authoryear,maxnames=99,uniquename=false]{biblatex}
+
+\usepackage{appendix}
+
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage[utf8]{inputenc} % Để hỗ trợ UTF-8
+
+\usepackage{float}
+\usepackage{subcaption}
+\usepackage{xurl}
+
+\usepackage[nonumberlist, nopostdot, nogroupskip, acronym]{glossaries}
+\usepackage{glossary-superragged}
+\setglossarystyle{superraggedheaderborder}
+\usepackage{setspace}
+\usepackage{parskip}
+
+% package content table
+\usepackage{tocbasic}
+
+\usepackage{blindtext}
+\usepackage[table,xcdraw]{xcolor}
+
+\usepackage{listings} % Gói cho phép chèn code và định dạng code
+
+% --- CẤU HÌNH HIỂN THỊ CODE ---
+% ==== FONTS & UTF-8 (khuyên dùng XeLaTeX) ====
+% \usepackage{fontspec}           % BẬT nếu dùng XeLaTeX/LuaLaTeX
+% \setmonofont{JetBrains Mono}    % hoặc Inconsolata/Fira Code/… (tùy máy)
+
+% Nếu dùng pdfLaTeX:
+\usepackage[T5]{fontenc}
+\usepackage[utf8]{inputenc}
+
+% ==== LISTINGS & MÀU SẮC ====
+\usepackage{listings}
+
+% Bảng màu nhẹ, phù hợp in ấn
+\definecolor{CodeBG}{rgb}{0.98,0.98,0.96}
+\definecolor{CodeFrame}{rgb}{0.80,0.80,0.80}
+\definecolor{CodeNum}{rgb}{0.55,0.55,0.55}
+\definecolor{CodeCmt}{rgb}{0,0.45,0}
+\definecolor{CodeStr}{rgb}{0.58,0,0.82}
+\definecolor{CodeKw}{rgb}{0,0,0.6}
+\definecolor{CodePunct}{rgb}{0.5,0.5,0.5}
+\definecolor{CodeDelim}{RGB}{20,105,176}
+\definecolor{CodeNumb}{RGB}{106,109,32}
+
+% ==== STYLE CHUNG ====
+\lstdefinestyle{tech}{
+  backgroundcolor=\color{CodeBG},
+%   basicstyle=\ttfamily\small,           % monospace, cỡ vừa phải cho đồ án
+  basicstyle=\ttfamily\footnotesize,   % đổi từ \small sang \footnotesize
+  numbers=left,
+  numberstyle=\scriptsize\color{CodeNum},
+  numbersep=8pt,
+  frame=single,
+  rulecolor=\color{CodeFrame},
+  breaklines=true,
+  tabsize=2,
+  showstringspaces=false,
+  keepspaces=true,
+  captionpos=b,
+  % Gợi ý màu
+  keywordstyle=\color{CodeKw}\bfseries,
+  commentstyle=\color{CodeCmt}\itshape,
+  stringstyle=\color{CodeStr},
+}
+
+% ==== HỖ TRỢ DẤU & KÝ HIỆU KHOA HỌC (nếu pdfLaTeX) ====
+\lstset{
+  style=tech,
+  extendedchars=true,
+  inputencoding=utf8,
+  literate=
+   {đ}{{\dj}}1 {Đ}{{\DJ}}1
+   {°}{{$^\circ$}}1 {Δ}{{$\Delta$}}1 {×}{{$\times$}}1 {≈}{{$\approx$}}1
+   {ρ}{{$\rho$}}1
+}
+
+% ==== NGÔN NGỮ: JSON ====
+\lstdefinelanguage{json}{
+  basicstyle=\ttfamily\small,
+  numbers=left, numberstyle=\scriptsize\color{CodeNum}, numbersep=8pt,
+  showstringspaces=false,
+  breaklines=true,
+  frame=single, rulecolor=\color{CodeFrame},
+  morestring=[b]",
+  commentstyle=\color{CodeCmt}\itshape,
+  stringstyle=\color{CodeStr},
+  morecomment=[l]{//},
+  literate=
+   *{0}{{{\color{CodeNumb}0}}}{1}
+    {1}{{{\color{CodeNumb}1}}}{1}
+    {2}{{{\color{CodeNumb}2}}}{1}
+    {3}{{{\color{CodeNumb}3}}}{1}
+    {4}{{{\color{CodeNumb}4}}}{1}
+    {5}{{{\color{CodeNumb}5}}}{1}
+    {6}{{{\color{CodeNumb}6}}}{1}
+    {7}{{{\color{CodeNumb}7}}}{1}
+    {8}{{{\color{CodeNumb}8}}}{1}
+    {9}{{{\color{CodeNumb}9}}}{1}
+    {:}{{{\color{CodePunct}{:}}}}{1}
+    {,}{{{\color{CodePunct}{,}}}}{1}
+    {\{}{{{\color{CodeDelim}{\{}}}}{1}
+    {\}}{{{\color{CodeDelim}{\}}}}}{1}
+    {[}{{{\color{CodeDelim}{[}}}}{1}
+    {]}{{{\color{CodeDelim}{]}}}}{1},
+}
+
+% ==== NGÔN NGỮ: InfluxQL (InfluxDB 1.x) ====
+\lstdefinelanguage{InfluxQL}{
+  morekeywords={
+    SELECT,FROM,WHERE,AND,OR,GROUP,BY,ORDER,LIMIT,SLIMIT,SOFFSET,OFFSET,INTO,MEASUREMENT,SHOW,MEASUREMENTS,RETENTION,POLICIES,CONTINUOUS,QUERIES,ON,CREATE,DELETE,DROP,FIELD,KEYS,TIME,ASC,DESC,FILL
+  },
+  morekeywords=[2]{mean,max,min,sum,count,first,last,median,percentile,derivative,non_negative_derivative,difference,moving_average,stddev,spread},
+  sensitive=false,
+  keywordstyle=\color{CodeKw}\bfseries,
+  keywordstyle=[2]\color{CodeKw},
+  comment=[l]{--},
+  morecomment=[l]{//},
+  morestring=[b]',
+  morestring=[b]",
+}
+
+% ==== NGÔN NGỮ: Flux (InfluxDB 2.x) ====
+\lstdefinelanguage{Flux}{
+  morekeywords={
+    import,option,from,range,filter,group,aggregateWindow,mean,max,min,sum,count,keep,drop,map,pivot,sort,yield,join,union,duplicate,rename,window,fill
+  },
+  sensitive=true,
+  keywordstyle=\color{CodeKw}\bfseries,
+  comment=[l]{//},
+  morestring=[b]",
+}
+
+% ==== TIỆN DỤNG: môi trường rút gọn theo ngôn ngữ ====
+\lstnewenvironment{pycode}[1][]{\lstset{language=Python,#1}}{}
+\lstnewenvironment{cppcode}[1][]{\lstset{language=C++,#1}}{}
+\lstnewenvironment{jsoncode}[1][]{\lstset{language=json,#1}}{}
+\lstnewenvironment{influxql}[1][]{\lstset{language=InfluxQL,#1}}{}
+\lstnewenvironment{fluxcode}[1][]{\lstset{language=Flux,#1}}{}
+
+ % ===================================================
+
+\renewcommand{\bibname}{Danh_sach_tai_lieu_tham_khao} 
+% \usepackage[backend=bibtex,style=ieee]{biblatex}  %backend=biber is 'better'
+\usepackage[natbib,backend=biber,style=ieee]{biblatex} % Giúp chèn tài liệu tham khảo
+% \usepackage[backend=biber,style=authoryear,maxnames=99,uniquename=false]{biblatex}
+% \DefineBibliographyStrings{english}{%
+%     and = {và},
+%     volume = {tập},
+% }
+
+\renewcommand\appendixname{PHỤ LỤC}
+\renewcommand\appendixpagename{PHỤ LỤC}
+\renewcommand\appendixtocname{PHỤ LỤC}
+
+\addbibresource{Danh_sach_tai_lieu_tham_khao.bib} % chèn file chứa danh mục tài liệu tham khảo vào
+
+\input{Tu_viet_tat}
+
+% ===================================================
+
+
+\fancypagestyle{plain}{%
+\fancyhf{} % clear all header and footer fields
+\fancyfoot[RO,RE]{\thepage} %RO=right odd, RE=right even
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}}
+
+\setlength{\headheight}{10pt}
+
+\def \TITLE{ĐỒ ÁN TỐT NGHIỆP}
+\def \AUTHOR{VŨ ĐỨC MINH}
+
+% ===================================================
+
+\titleformat 
+    {\chapter} % command
+    [hang] % shape
+    {\centering\bfseries} % format
+    {CHƯƠNG \thechapter.\ } % label
+    {0pt} %sep
+    {} % before
+    [] % after
+\titlespacing*{\chapter}{0pt}{-20pt}{20pt}
+
+\titleformat
+    {\section} % command
+    [hang] % shape
+    {\bfseries} % format
+    {\thechapter.\arabic{section}\ \ \ \ } % label
+    {0pt} %sep
+    {} % before
+    [] % after
+\titlespacing{\section}{0pt}{\parskip}{0.5\parskip}
+
+\titleformat
+    {\subsection} % command
+    [hang] % shape
+    {\bfseries} % format
+    {\thechapter.\arabic{section}.\arabic{subsection}\ \ \ \ } % label
+    {0pt} %sep
+    {} % before
+    [] % after
+\titlespacing{\subsection}{30pt}{\parskip}{0.5\parskip}
+
+\renewcommand\thesubsubsection{\alph{subsubsection}}
+\titleformat
+    {\subsubsection} % command
+    [hang] % shape
+    {\bfseries} % format
+    {\alph{subsubsection}, \ } % label
+    {0pt} %sep
+    {} % before
+    [] % after
+\titlespacing{\subsubsection}{50pt}{\parskip}{0.5\parskip}
+
+% \newcommand{\titlesize}{\fontsize{18pt}{23pt}\selectfont}
+% \newcommand{\subtitlesize}{\fontsize{16pt}{21pt}\selectfont}
+% \titleclass{\part}{top}
+% \titleformat{\part}[display]
+%   {\normalfont\huge\bfseries}{\centering}{20pt}{\Huge\centering}
+% \titlespacing{\part}{0pt}{em}{1em}
+% \titlespacing{\section}{0pt}{\parskip}{0.5\parskip}
+% \titlespacing{\subsection}{0pt}{\parskip}{0.5\parskip}
+% \titlespacing{\subsubsection}{0pt}{\parskip}{0.5\parskip}
+
+% ===================================================
+\usepackage{hyperref}
+\hypersetup{pdfborder = {0 0 0}} %
+\hypersetup{pdftitle={\TITLE},
+	pdfauthor={\AUTHOR}}
+	
+\usepackage[all]{hypcap} % Cho phép tham chiếu chính xác đến hình ảnh và bảng biểu
+
+\graphicspath{{figures/}{../figures/}} % Thư mục chứa các hình ảnh
+
+\counterwithin{figure}{chapter} % Đánh số hình ảnh kèm theo chapter. Ví dụ: Hình 1.1, 1.2,..
+
+\title{\bf \TITLE}
+\author{\AUTHOR}
+
+\setcounter{secnumdepth}{3} % Cho phép subsubsection trong report
+% \setcounter{tocdepth}{3} % Chèn subsubsection vào bảng mục lục
+
+\theoremstyle{definition}
+\newtheorem{example}{Ví dụ}[chapter] % Định nghĩa môi trường ví dụ
+
+\onehalfspacing
+%Khoảng cách xuống dòng
+\setlength{\parskip}{6pt}
+%Lùi đầu dòng
+\setlength{\parindent}{15pt}
+
+
+
+% =========================== BODY ===============
+\begin{document}
+% \newgeometry{top=2cm, bottom=2cm, left=2cm, right=2cm}
+% \subfile{Bia} % Phần bìa
+% \restoregeometry
+
+% ===================================================
+\pagenumbering{roman}
+
+\newpage
+\pagenumbering{gobble}
+\subfile{Chuong/0_0_Loi_cam_doan.tex}
+
+\newpage
+\pagenumbering{gobble}
+\subfile{Chuong/0_1_Loi_cam_on.tex}
+
+\newpage
+\pagenumbering{gobble}
+\subfile{Chuong/0_2_Tom_tat_noi_dung.tex}
+
+\newpage
+\pagenumbering{gobble}
+\subfile{Chuong/0_3_Loi_noi_dau.tex}
+
+% ===================================================
+% \pagestyle{empty} % Header và footer rỗng
+\newpage
+\pagenumbering{roman} % Xóa page numbering ở cuối trang
+\pagestyle{plain}
+\renewcommand*\contentsname{MỤC LỤC}
+
+\titlecontents{chapter}
+    [0.0cm]             % left margin
+    {\bfseries\vspace{0.3cm}}                  % above code
+    {{\bfseries{\scshape}
+    CHƯƠNG \thecontentslabel.\ }}
+    % numbered format
+    {}         % unnumbered format
+    {\titlerule*[0.3pc]{.}\contentspage}         % filler-page-format, e.g dots
+
+    
+\titlecontents{section}
+    [0.0cm]             % left margin
+    {\vspace{0.3cm}}                  % above code
+    {\thecontentslabel \ } % numbered format
+    {}         % unnumbered format
+    {\titlerule*[0.3pc]{.}\contentspage}         % filler-page-format, e.g dots
+    
+\titlecontents{subsection}
+    [1.0cm]             % left margin
+    {\vspace{0.3cm}}                  % above code
+    {\thecontentslabel \ } % numbered format
+    {}         % unnumbered format
+    {\titlerule*[0.3pc]{.}\contentspage}         % filler-page-format, e.g dots
+
+ % Tạo mục lục tự động
+\addtocontents{toc}{\protect\thispagestyle{plain}}
+\tableofcontents 
+\thispagestyle{plain}
+\cleardoublepage
+
+% \pagenumbering{roman}
+%Tạo danh mục hình vẽ.
+\pagestyle{plain}
+\renewcommand{\listfigurename}{DANH MỤC HÌNH VẼ}
+{\let\oldnumberline\numberline
+\renewcommand{\numberline}{Hình~\oldnumberline}
+\listoffigures} 
+\thispagestyle{plain}
+% \phantomsection\addcontentsline{toc}{section}{\numberline {} DANH MỤC HÌNH VẼ}
+\newpage
+
+
+ %Tạo danh mục bảng biểu.
+\pagestyle{plain}
+\renewcommand{\listtablename}{DANH MỤC BẢNG BIỂU}
+{\let\oldnumberline\numberline
+\renewcommand{\numberline}{Bảng~\oldnumberline}
+\listoftables}
+\thispagestyle{plain}
+% \phantomsection\addcontentsline{toc}{section}{\numberline {} DANH MỤC BẢNG BIỂU}
+
+% \glsaddall
+% \renewcommand*{\acronymname}{}
+% \renewcommand*{\descriptionname}{Ý nghĩa}
+
+% \renewcommand*{\entryname}{Thuật ngữ/từ viết tắt}
+% \printnoidxglossary[type=acronym,
+%                     title={DANH MỤC THUẬT NGỮ VÀ TỪ VIẾT TẮT},
+%                     toctitle={Danh sách thuật ngữ/viết tắt}]
+
+% \renewcommand*{\entryname}{Ký hiệu}
+% \printnoidxglossary[type=symbols,
+%                     title={DANH MỤC KÝ HIỆU},
+%                     toctitle={Danh sách ký hiệu}]
+
+% ===================================================
+
+
+\newpage
+\pagenumbering{arabic}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\setlength{\headheight}{14pt}
+\makeatletter
+\renewcommand{\chaptermark}[1]{\markboth{CHƯƠNG \thechapter.\ #1}{}}
+\makeatother
+\fancyhead[LO]{\nouppercase{\leftmark}}
+\fancyhead[RE]{\nouppercase{\leftmark}}
+\fancyfoot[RO]{\thepage}
+\renewcommand{\sectionmark}[1]{}
+
+\chapter{TỔNG QUAN}
+\label{chuong1}
+\subfile{Chuong/1_Chuong_1.tex} % Phần mở đầu
+
+\newpage
+% \pagestyle{fancy} % Áp dụng header và footer
+\chapter{CƠ SỞ LÝ THUYẾT}
+\label{chuong2}
+\subfile{Chuong/2_Chuong_2.tex}
+
+\newpage
+% \pagestyle{fancy} % Áp dụng header và footer
+\chapter{THIẾT KẾ XÂY DỰNG HỆ THỐNG}
+\label{chuong3}
+\subfile{Chuong/3_Chuong_3.tex}
+
+\newpage
+% \pagestyle{fancy} % Áp dụng header và footer
+\chapter{THỰC NGHIỆM VÀ ĐÁNH GIÁ HIỆU QUẢ}
+\label{chuong4}
+\subfile{Chuong/4_Chuong_4.tex}
+
+\newpage
+% \pagestyle{fancy} % Áp dụng header và footer
+\chapter{KẾT LUẬN VÀ HƯỚNG PHÁT TRIỂN}
+\label{chuong5}
+\subfile{Chuong/5_Chuong_5.tex}
+
+% ===================================================
+
+\newpage
+\renewcommand\bibname{TÀI LIỆU THAM KHẢO}
+\printbibliography
+\phantomsection\addcontentsline{toc}{chapter}{TÀI LIỆU THAM KHẢO}
+
+\appendixpage
+\appendices
+\addappheadtotoc
+
+% \chapter*{PHỤ LỤC} %Kết luận và hướng phát triển}
+
+%\mainmatter
+\titleformat{\chapter}[hang]{\centering\bfseries}{ \thechapter.\ }{0pt}{}[]
+\titlespacing*{\chapter}{0pt}{-20pt}{20pt}
+
+\titlecontents{chapter}
+    [0.0cm]             % left margin
+    {\bfseries\vspace{0.3cm}}                  % above code
+    {{\bfseries{\scshape} \thecontentslabel.\ }} % numbered format
+    {}         % unnumbered format
+    {\titlerule*[0.3pc]{.}\contentspage}         % filler-page-format, e.g dots
+\chapter{MÃ NGUỒN VÀ TÀI LIỆU KỸ THUẬT}
+\subfile{Chuong/Phu_luc_A}
+\newpage
+\chapter{THÔNG SỐ THIẾT KẾ MÔ HÌNH}
+\subfile{Chuong/Phu_luc_B}
+\end{document}

@@ -1,0 +1,201 @@
+% !TeX root = ../main.tex
+
+\documentclass[../main.tex]{subfiles}
+\begin{document}
+
+\section{Chi tiết triển khai phần mềm hệ thống}
+\label{sec:software_implementation}
+
+Phụ lục này trình bày chi tiết về kiến trúc phần mềm và triển khai hệ thống giám sát tháp giải nhiệt IoT. Hệ thống được thiết kế theo mô hình phân tầng với các thành phần chính bao gồm firmware ESP32, backend Python và cơ sở dữ liệu InfluxDB. Mỗi thành phần được tối ưu hóa để đảm bảo tính ổn định, hiệu quả và khả năng mở rộng của hệ thống.
+
+\subsection{Firmware ESP32 - Hệ thống cảm biến chính}
+\label{sec:esp32_firmware}
+
+Firmware ESP32 đóng vai trò trung tâm trong việc thu thập dữ liệu từ các cảm biến, xử lý sơ bộ và truyền dữ liệu lên hệ thống backend. Thiết kế firmware tuân theo nguyên tắc non-blocking để đảm bảo tính ổn định và khả năng phản hồi nhanh.
+
+\subsubsection{Thư viện và cấu trúc dữ liệu}
+\label{sec:libraries_data_structures}
+
+ESP32 sử dụng kiến trúc modular với các thư viện chuẩn cho IoT và cảm biến. Cấu trúc dữ liệu SensorData được thiết kế để lưu trữ tất cả thông số đo được từ tháp giải nhiệt với khả năng validation và error handling tích hợp.
+
+\lstinputlisting[language=C++, caption={Khai báo thư viện và cấu trúc dữ liệu cảm biến}, firstline=1, lastline=22]{code_examples/esp32_libraries.ino}
+
+\subsubsection{Cấu hình kết nối WiFi}
+\label{sec:wifi_configuration}
+
+Hệ thống sử dụng WiFiManager để tự động quản lý kết nối mạng. Thư viện này cho phép tạo portal cấu hình WiFi tự động, đảm bảo hệ thống có thể kết nối mạng một cách linh hoạt mà không cần hard-code thông tin WiFi. Cơ chế này đặc biệt hữu ích khi triển khai hệ thống trong các môi trường mạng khác nhau.
+
+\lstinputlisting[language=C++, caption={Quản lý kết nối WiFi với portal tự động}, firstline=1, lastline=25]{code_examples/esp32_wifi_config.ino}
+
+\subsubsection{Cấu hình MQTT và JSON}
+\label{sec:mqtt_json_config}
+
+Hệ thống sử dụng giao thức MQTT với mã hóa TLS để truyền dữ liệu an toàn. Dữ liệu cảm biến được đóng gói dạng JSON với timestamp và device ID để đảm bảo tính toàn vẹn và khả năng truy xuất nguồn gốc. Việc sử dụng MQTT giúp giảm thiểu băng thông và tăng độ tin cậy trong truyền thông IoT.
+
+\lstinputlisting[language=C++, caption={Cấu hình MQTT client và tạo JSON payload}, firstline=1, lastline=43]{code_examples/esp32_mqtt_config.ino}
+
+\subsubsection{Cấu hình phần cứng cảm biến}
+\label{sec:sensor_hardware_config}
+
+Hệ thống tích hợp 4 loại cảm biến chính để đo lường các thông số quan trọng của tháp giải nhiệt: YF-S201 (lưu lượng nước), DS18B20 (nhiệt độ nước vào/ra), DHT22 (nhiệt độ và độ ẩm không khí). Ngoài ra, rơ-le bán dẫn (SSR) được điều khiển bằng tín hiệu PWM để quản lý tải nhiệt một cách an toàn và hiệu quả.
+
+\lstinputlisting[language=C++, caption={Định nghĩa chân GPIO và khởi tạo cảm biến}, firstline=1, lastline=36]{code_examples/esp32_pin_sensor_config.ino}
+
+\subsubsection{Hàm đọc và xử lý dữ liệu cảm biến}
+\label{sec:sensor_data_processing}
+
+Các hàm đọc cảm biến được thiết kế với cơ chế kiểm tra lỗi và validation dữ liệu tích hợp. Hệ thống áp dụng các bộ lọc số để loại bỏ nhiễu và đảm bảo độ tin cậy của dữ liệu. Dữ liệu không hợp lệ được gắn giá trị -999.0 để dễ nhận biết và loại bỏ trong quá trình xử lý sau.
+
+\lstinputlisting[language=C++, caption={Các hàm đọc cảm biến và validation dữ liệu}, firstline=1, lastline=40]{code_examples/esp32_sensor_functions.ino}
+
+\subsubsection{Chương trình chính ESP32}
+\label{sec:esp32_main_program}
+
+Vòng lặp chính của firmware thực hiện theo chu kỳ 30 giây với các bước: đọc dữ liệu cảm biến → xử lý và validation → điều khiển SSR → gửi dữ liệu qua MQTT. Thiết kế non-blocking đảm bảo hệ thống không bị treo khi gặp lỗi kết nối mạng hoặc cảm biến. Cơ chế watchdog timer được tích hợp để tự động khởi động lại hệ thống trong trường hợp bất thường.
+
+\lstinputlisting[language=C++, caption={Setup và loop chính với xử lý kết nối}, firstline=1, lastline=43]{code_examples/esp32_main_loop.ino}
+
+\subsection{Backend Python - Xử lý dữ liệu và lưu trữ}
+\label{sec:python_backend}
+
+Hệ thống backend được phát triển bằng Python với các thư viện chuyên dụng cho xử lý dữ liệu thời gian thực và tính toán kỹ thuật. Backend đóng vai trò trung gian giữa các thiết bị IoT và cơ sở dữ liệu, đồng thời thực hiện các tính toán phức tạp về hiệu suất tháp giải nhiệt.
+
+\subsubsection{Module tính toán thông số kỹ thuật}
+\label{sec:technical_calculations}
+
+Module tính toán thực hiện các công thức kỹ thuật để xác định hiệu suất tháp giải nhiệt theo các tiêu chuẩn công nghiệp. Các thông số được tính toán bao gồm nhiệt độ bầu ướt, hiệu suất làm mát, công suất giải nhiệt, approach temperature và range temperature. Tất cả các công thức đều tuân theo chuẩn ASHRAE và được validation với dữ liệu thực nghiệm.
+
+\lstinputlisting[language=Python, caption={Các hàm tính toán thông số kỹ thuật tháp giải nhiệt}, firstline=1, lastline=48]{code_examples/process_calculations.py}
+
+\subsubsection{Hệ thống quản lý cơ sở dữ liệu}
+\label{sec:database_management}
+
+InfluxDBHandler cung cấp interface toàn diện cho việc ghi và đọc dữ liệu time-series. Lớp này hỗ trợ các truy vấn Flux để phân tích xu hướng, tính toán thống kê và tạo báo cáo. Hệ thống được tối ưu hóa cho hiệu suất cao với khả năng xử lý hàng nghìn điểm dữ liệu mỗi giây.
+
+\lstinputlisting[language=Python, caption={Lớp xử lý kết nối và thao tác với InfluxDB}, firstline=1, lastline=47]{code_examples/influxdb_config.py}
+
+\subsection{Đặc tả kỹ thuật hệ thống}
+\label{sec:system_specifications}
+
+\subsubsection{Thông số hoạt động chính}
+\label{sec:operational_parameters}
+
+\begin{table}[H]
+\centering
+\caption{Thông số kỹ thuật hệ thống giám sát}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Thông số} & \textbf{Giá trị} & \textbf{Đơn vị} \\
+\hline
+Chu kỳ đo & 30 & giây \\
+Tốc độ truyền UART & 115200 & bps \\
+Điện áp cảm biến & 3.3/5.0 & V \\
+Ngưỡng lưu lượng an toàn & 0.1 & L/phút \\
+PWM duty cycle SSR & 19 - 30 & \% \\
+Timeout MQTT & 12 & giây \\
+Độ phân giải nhiệt độ & 0.01 & °C \\
+Độ phân giải lưu lượng & 0.01 & L/phút \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Sơ đồ kết nối GPIO}
+
+\begin{table}[H]
+\centering
+\caption{Bảng kết nối GPIO ESP32 với cảm biến}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{Cảm biến/Thiết bị} & \textbf{Chân ESP32} & \textbf{Giao thức} & \textbf{Chức năng} \\
+\hline
+YF-S201 Flow Sensor & GPIO 19 & Interrupt/Hall & Đo lưu lượng nước \\
+DS18B20 Inlet Temp & GPIO 4 & 1-Wire & Nhiệt độ nước vào \\
+DS18B20 Outlet Temp & GPIO 5 & 1-Wire & Nhiệt độ nước ra \\
+DHT22 Air Sensor & GPIO 17 & Single-wire & Nhiệt độ/độ ẩm không khí \\
+SSR Control & GPIO 16 & PWM Output & Điều khiển tải nhiệt \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Cơ chế bảo vệ an toàn}
+\label{sec:safety_mechanisms}
+
+Hệ thống tích hợp nhiều lớp bảo vệ an toàn được thiết kế để đảm bảo vận hành ổn định và an toàn trong mọi điều kiện:
+
+\begin{itemize}
+\item \textbf{Flow Interlock}: Tự động ngắt SSR khi lưu lượng < 0.1 L/phút
+\item \textbf{Timeout Protection}: Ngắt SSR sau 12 giây không nhận được tín hiệu
+\item \textbf{Watchdog Timer}: ESP32 tự reset khi bị treo
+\item \textbf{MQTT Heartbeat}: Giám sát kết nối liên tục
+\item \textbf{Data Validation}: Kiểm tra tính hợp lệ của dữ liệu cảm biến
+\end{itemize}
+
+\subsection{Giao thức truyền thông}
+\label{sec:app_a_communication_protocols}
+
+\subsubsection{Định dạng MQTT JSON}
+\label{sec:mqtt_json_format}
+
+Dữ liệu được truyền qua MQTT topic \texttt{sensors/cooling\_tower} với định dạng JSON chuẩn:
+
+\begin{verbatim}
+{
+  "device_id": "ESP32_TOWER_01",
+  "timestamp": 1692876543000,
+  "flow_rate": 1.92,
+  "water_temp_inlet": 35.5,
+  "water_temp_outlet": 29.8,
+  "air_temp_inlet": 25.2,
+  "air_humidity_inlet": 69.9
+}
+\end{verbatim}
+
+\subsubsection{Cấu hình InfluxDB}
+\label{sec:influxdb_configuration}
+
+Dữ liệu được lưu trữ trong measurement \texttt{cooling\_tower} với các field tương ứng với từng thông số cảm biến. Retention policy được thiết lập linh hoạt: 30 ngày cho dữ liệu thô (resolution 30s) và 1 năm cho dữ liệu đã downsample (resolution 1h). Cấu hình này đảm bảo cân bằng giữa độ chi tiết của dữ liệu và không gian lưu trữ.
+
+\subsection{Kiểm thử và validation hệ thống}
+\label{sec:testing_validation}
+
+\subsubsection{Kế hoạch kiểm thử}
+\label{sec:test_cases}
+
+\begin{enumerate}
+\item \textbf{Sensor Reading Test}: Validation độ chính xác cảm biến
+\item \textbf{Safety Interlock Test}: Kiểm tra cơ chế ngắt SSR khi không có lưu lượng
+\item \textbf{Network Resilience Test}: Test khả năng tự phục hồi khi mất kết nối
+\item \textbf{Data Integrity Test}: Validation tính toàn vẹn dữ liệu JSON
+\item \textbf{Performance Test}: Đánh giá thời gian phản hồi system
+\end{enumerate}
+
+\subsubsection{Kết quả kiểm thử}
+\label{sec:test_results}
+
+Hệ thống đã được kiểm thử trong 72 giờ liên tục trong điều kiện phòng thí nghiệm với các kết quả đạt yêu cầu:
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\caption{Kết quả kiểm thử hệ thống}
+\label{tab:test_results}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Thông số kiểm thử} & \textbf{Kết quả đạt được} & \textbf{Đánh giá} \\
+\hline
+Uptime hệ thống & 99.8\% & Đạt yêu cầu \\
+\hline
+Độ chính xác nhiệt độ & ±0.1°C & Rất tốt \\
+\hline
+Độ chính xác lưu lượng & ±0.08 L/phút & Rất tốt \\
+\hline
+Thời gian phản hồi SSR & < 100ms & Xuất sắc \\
+\hline
+Tỷ lệ dữ liệu hoàn chỉnh & 99.95\% & Rất tốt \\
+\hline
+\end{tabular}
+\end{table}
+
+\end{document}
